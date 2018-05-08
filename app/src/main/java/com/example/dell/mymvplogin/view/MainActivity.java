@@ -2,15 +2,19 @@ package com.example.dell.mymvplogin.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.dell.mymvplogin.R;
-import com.example.dell.mymvplogin.modle.LoginBean;
 import com.example.dell.mymvplogin.modle.ModleImp;
 import com.example.dell.mymvplogin.presenter.PresenterImp;
 
@@ -32,7 +36,9 @@ public class MainActivity extends AppCompatActivity implements IMainView, View.O
      * 注册
      */
     private Button mZc;
-
+    private ProgressBar mProgres;
+    private LinearLayout mLlayout;
+private MyHandler myHandler = new MyHandler();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements IMainView, View.O
 
     @Override
     public void loginDataSuccess(String json) {
-        Log.d("登录成功", "222"+json);
+        Log.d("登录成功", "222" + json);
         Toast.makeText(this, "登录成功Phone数据：---" + json, Toast.LENGTH_SHORT).show();
 
 
@@ -70,6 +76,29 @@ public class MainActivity extends AppCompatActivity implements IMainView, View.O
         return mPsw.getText().toString();
     }
 
+    @Override
+    public void showProgress() {
+        try {
+            mProgres.setVisibility(View.VISIBLE);
+            mLlayout.setVisibility(View.GONE);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(MainActivity.this, "log", Toast.LENGTH_SHORT).show();
+                    Log.d("MainActivity---------", "log");
+                    myHandler.sendEmptyMessageDelayed(0,2000);
+
+
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+
     private void initView() {
         mMobile = (EditText) findViewById(R.id.mobile);
         mPsw = (EditText) findViewById(R.id.psw);
@@ -77,6 +106,8 @@ public class MainActivity extends AppCompatActivity implements IMainView, View.O
         mLogin.setOnClickListener(this);
         mZc = (Button) findViewById(R.id.zc);
         mZc.setOnClickListener(this);
+        mProgres = (ProgressBar) findViewById(R.id.progres);
+        mLlayout = (LinearLayout) findViewById(R.id.llayout);
     }
 
     @Override
@@ -87,10 +118,22 @@ public class MainActivity extends AppCompatActivity implements IMainView, View.O
             case R.id.login:
                 PresenterImp presenterr = new PresenterImp();
                 presenterr.loginMtoV(new ModleImp(), this);
+
                 break;
             case R.id.zc:
                 startActivity(new Intent(MainActivity.this, ZhuceActivity.class));
                 break;
         }
     }
+
+    class MyHandler extends Handler{
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            mProgres.setVisibility(View.GONE);
+            mLlayout.setVisibility(View.VISIBLE);
+
+        }
+    }
+
 }

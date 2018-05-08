@@ -8,4 +8,5 @@ public interface IMainView {
     void loginDataError(String error);
     String getMobile();
     String getPsw();
+    void showProgress();
 }

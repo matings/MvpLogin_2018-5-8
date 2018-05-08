@@ -19,7 +19,9 @@ public class PresenterImp implements IPresenter{
         iModle.login(HttpConfig.login_url, params, new loginLisenter() {
             @Override
             public void loginSuccess(String json) {
+                iMainView.showProgress();
                 iMainView.loginDataSuccess(json);
+
             }
 
             @Override
